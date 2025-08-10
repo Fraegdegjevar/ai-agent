@@ -7,11 +7,12 @@ def main():
     
     #Collect command-line arguments supplied when script called
     # args[0] is always the name of the script. args[1] is the first CL argument supplied
-    args = sys.argv
+    args = sys.argv[1:]
     
     #If no prompt supplied, throw error
-    if len(args) < 2:
+    if not args:
         print("No prompt supplied! Please supply a prompt.")
+        print('Example usage: python main.py "your prompt here"')
         sys.exit(1)
     
     #For loading .env into sys environment variables
