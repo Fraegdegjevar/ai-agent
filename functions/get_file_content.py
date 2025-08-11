@@ -22,7 +22,7 @@ def get_file_content(working_directory, file_path):
         trunc_text = f'[...File "{target_path}" truncated at {MAX_CHARS} characters]'
         
         if len(file_content_string) > MAX_CHARS:
-            file_content_string = file_content_string[:MAX_CHARS + 1] + trunc_text
+            file_content_string = file_content_string[:MAX_CHARS] + trunc_text
         
         return file_content_string
     except Exception as e:
