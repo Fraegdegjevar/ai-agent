@@ -1,5 +1,7 @@
 from google.genai import types
 from callable_functions import *
+from config import WORKING_DIR
+
 def call_function(function_call, verbose=False):
     if verbose:
         print(f"Calling function: {function_call.name}({function_call.args})")
@@ -11,7 +13,7 @@ def call_function(function_call, verbose=False):
     
     #First ensure working_directory is added to the args dict
     args = function_call.args
-    args["working_directory"] = "./calculator"
+    args["working_directory"] = WORKING_DIR
     
     #Ensure the model is trying to call one of the functions we have exposed to it
     valid_function_name = False
