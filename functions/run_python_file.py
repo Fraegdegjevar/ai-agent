@@ -65,5 +65,6 @@ schema_run_python_file = types.FunctionDeclaration(
                 nullable=True
             )
         },
+        required = ["file_path"],
     ),
 )
