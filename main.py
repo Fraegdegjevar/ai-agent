@@ -3,9 +3,21 @@ import sys
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
+from functions.get_files_info import schema_get_files_info
 
 def main():
-    
+
+    #System prompt to the model/LLM. Note that this is guidance to the model on how to 
+    # assist the user, frames the conversation, and comes before the user prompt.
+    system_prompt = """
+    You are a helpful AI coding agent.
+
+    When a user asks a question or makes a request, make a function call plan. You can perform the following operations:
+
+    - List files and directories
+
+    All paths you provide should be relative to the working directory. You do not need to specify the working directory in your function calls as it is automatically injected for security reasons.
+    """
     
     # args[0] is always the name of the script. args[1] is the first CL argument supplied
     verbose = "--verbose" in sys.argv
@@ -36,18 +48,36 @@ def main():
     #The google genai client
     client = genai.Client(api_key=api_key)
     
+    #List of available function declarations/schema for the model
+    available_functions = types.Tool(
+        function_declarations=[
+            schema_get_files_info,
+        ]
+    )
+    
     #Choose model and submit supplied prompt to client to get response
     response = client.models.generate_content(
         model="gemini-2.0-flash-001", 
-        contents=messages
+        contents=messages,
+        config=types.GenerateContentConfig(
+            tools=[available_functions],
+            system_instruction=system_prompt
         )
+    )
     
     if verbose:
         print(f"\nUser prompt: {user_prompt}")
         print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
         print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
     
-    print("\n" + response.text)
+    #Check the function calls made by the LLM and print them out, else print the response text.
+    if response.function_calls:
+        for function_call in response.function_calls:
+            args_string = function_call.args if function_call.args else ''
+            print(f"Calling function: {function_call.name}({args_string})")
+    elif response.text:
+        print("\n RESPONSE: " + response.text)
+    
 
 if __name__ == "__main__":
     main()
