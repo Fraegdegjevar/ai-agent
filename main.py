@@ -5,6 +5,7 @@ from google import genai
 from google.genai import types
 from prompts import system_prompt
 from callable_functions import available_functions
+from call_function import call_function
 
 
 def main():
@@ -37,7 +38,6 @@ def main():
     
     #The google genai client
     client = genai.Client(api_key=api_key)
-    
    
     #Choose model and submit supplied prompt to client to get response
     response = client.models.generate_content(
@@ -50,18 +50,26 @@ def main():
     )
     
     if verbose:
-        print(f"\nUser prompt: {user_prompt}")
+        print(f"User prompt: {user_prompt}")
         print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
         print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
     
     #Check the function calls made by the LLM and print them out, else print the response text.
     if response.function_calls:
         for function_call in response.function_calls:
-            args_string = function_call.args if function_call.args else ''
-            print(f"Calling function: {function_call.name}({args_string})")
+            #args_string = function_call.args if function_call.args else ''
+            #print(f"Calling function: {function_call.name}({args_string})")
+            
+            function_result = call_function(function_call, verbose=verbose)
+            
+            if not function_result.parts[0].function_response.response:
+                raise Exception('Fatal error: function execution failed!')
+            elif verbose:
+                print(f"-> {function_result.parts[0].function_response.response}")
+            
     elif response.text:
         print("\nRESPONSE: " + response.text)
     
-
+    
 if __name__ == "__main__":
     main()

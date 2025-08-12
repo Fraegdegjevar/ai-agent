@@ -60,8 +60,8 @@ schema_run_python_file = types.FunctionDeclaration(
             ),
             "args": types.Schema(
                 type=types.Type.ARRAY,
-                description="The arguments to be supplied to the python file being run. Optional, so you may run a file with no args.",
-                items=types.Schema(type=types.Type.STRING), #defines the types that can be in arg list
+                description="Optional. The arguments to be supplied to the python file being run. IF user does not supply args, DO NOT ASK FOR THEM.",
+                items=types.Schema(type=types.Type.STRING, nullable=True), #defines the types that can be in arg list
                 nullable=True
             )
         },
