@@ -2,7 +2,7 @@ import os
 import subprocess
 import sys
 from google.genai import types
-from functions.config import EXEC_TIMEOUT
+from config import EXEC_TIMEOUT
 
 def run_python_file(working_directory, file_path, args=[]):
     
