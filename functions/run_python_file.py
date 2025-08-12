@@ -1,6 +1,7 @@
 import os
 import subprocess
 import sys
+from google.genai import types
 from functions.config import EXEC_TIMEOUT
 
 def run_python_file(working_directory, file_path, args=[]):
@@ -45,4 +46,24 @@ def run_python_file(working_directory, file_path, args=[]):
         output.append(f'Process exited with code {result.returncode}')
     
     return "\n".join(output)
-    
+
+#Function declaration/schema for LLM
+schema_run_python_file = types.FunctionDeclaration(
+    name="run_python_file",
+    description="Runs a python file (.py) using subprocess with the provided args. Constrained to the working directory.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The path to the python file to be run, relative to the working directory. Must be provided.",
+            ),
+            "args": types.Schema(
+                type=types.Type.ARRAY,
+                description="The arguments to be supplied to the python file being run. Optional, so you may run a file with no args.",
+                items=types.Schema(type=types.Type.STRING), #defines the types that can be in arg list
+                nullable=True
+            )
+        },
+    ),
+)

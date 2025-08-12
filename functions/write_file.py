@@ -1,4 +1,5 @@
 import os
+from google.genai import types
 
 def write_file(working_directory, file_path, content):
     
@@ -16,3 +17,22 @@ def write_file(working_directory, file_path, content):
         return f'Successfully wrote to "{file_path}" ({len(content)} characters written)'
     except Exception as e:
         return f'Error: {e}'
+    
+#Function declaration/schema for LLM
+schema_write_file = types.FunctionDeclaration(
+    name="write_file",
+    description="Writes (or overwrites) a file at the file_path with content. Constrained to the working directory.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The path of the file to be written/overwritten, relative to the working directory. Must be provided.",
+            ),
+            "content": types.Schema(
+                type=types.Type.STRING,
+                description="The content to be written to the file. Must be provided.",
+            )
+        },
+    ),
+)
