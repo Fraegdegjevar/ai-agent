@@ -32,7 +32,7 @@ def get_file_content(working_directory, file_path):
 #Function declaration/schema for LLM
 schema_get_file_content = types.FunctionDeclaration(
     name="get_file_content",
-    description="Loads the file content as a string, truncated to a max of 10000 chars. Constrained to the working directory.",
+    description=f"Loads the file content as a string, truncated to a max of {MAX_CHARS} chars. Constrained to the working directory.",
     parameters=types.Schema(
         type=types.Type.OBJECT,
         properties={
