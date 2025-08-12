@@ -30,7 +30,6 @@ def run_python_file(working_directory, file_path, args=[]):
     except Exception as e:
         return f'Error: executing Python file: {e}'
     
-    
     output = []
     #Stripping trailing whitespace and inserting one newline char to standardise output whitespace.
     if result.stdout:

@@ -57,7 +57,7 @@ def main():
 def generate_content(client, messages, verbose):
     #Choose model and submit supplied prompt to client to get response
     response = client.models.generate_content(
-        model="gemini-2.0-flash-001", 
+        model="gemini-2.5-flash", 
         contents=messages,
         config=types.GenerateContentConfig(
             tools=[available_functions],
@@ -94,7 +94,9 @@ def generate_content(client, messages, verbose):
             #function_responses.append(function_result.parts[0].function_response.response) 
     elif response.text:
         return(response.text)
-    
+
+
+
 if __name__ == "__main__":
     main()
     
