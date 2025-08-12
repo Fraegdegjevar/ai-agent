@@ -6,3 +6,6 @@ EXEC_TIMEOUT = 30
 
 # Default working directory for all evaluations of function calls supplied by model
 WORKING_DIR = "./calculator"
+
+#The LLM model to use
+MODEL = "gemini-2.5-flash"

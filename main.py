@@ -3,6 +3,7 @@ import sys
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
+from config import MODEL
 from prompts import system_prompt
 from callable_functions import available_functions
 from call_function import call_function
@@ -57,7 +58,7 @@ def main():
 def generate_content(client, messages, verbose):
     #Choose model and submit supplied prompt to client to get response
     response = client.models.generate_content(
-        model="gemini-2.5-flash", 
+        model=MODEL, 
         contents=messages,
         config=types.GenerateContentConfig(
             tools=[available_functions],
