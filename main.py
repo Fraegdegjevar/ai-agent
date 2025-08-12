@@ -38,7 +38,23 @@ def main():
     
     #The google genai client
     client = genai.Client(api_key=api_key)
+    
+    if verbose:
+        print(f"User prompt: {user_prompt}")
+    
+    i = 0
+    result = None
+    for i in range(0,20):
+        try:
+            result = generate_content(client, messages, verbose)
+        except Exception as e:
+            print(f'Error: {e}')
+        
+        if result is not None:
+            print(result)
+            break
    
+def generate_content(client, messages, verbose):
     #Choose model and submit supplied prompt to client to get response
     response = client.models.generate_content(
         model="gemini-2.0-flash-001", 
@@ -49,12 +65,15 @@ def main():
         )
     )
     
+    for candidate in response.candidates:
+        messages.append(candidate.content)
+    
     if verbose:
-        print(f"User prompt: {user_prompt}")
         print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
         print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
     
     #Check the function calls made by the LLM and print them out, else print the response text.
+    #function_responses = []
     if response.function_calls:
         for function_call in response.function_calls:
             #args_string = function_call.args if function_call.args else ''
@@ -62,14 +81,20 @@ def main():
             
             function_result = call_function(function_call, verbose=verbose)
             
+            messages.append(types.Content(
+                role="user",
+                parts=[types.Part(text=f'{function_result.parts[0].function_response.response}')]
+                )
+            )
             if not function_result.parts[0].function_response.response:
                 raise Exception('Fatal error: function execution failed!')
             elif verbose:
                 print(f"-> {function_result.parts[0].function_response.response}")
             
+            #function_responses.append(function_result.parts[0].function_response.response) 
     elif response.text:
-        print("\nRESPONSE: " + response.text)
-    
+        return(response.text)
     
 if __name__ == "__main__":
     main()
+    
